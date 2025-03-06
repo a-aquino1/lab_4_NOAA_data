@@ -1,11 +1,12 @@
 ---
-title: "Lab 4"
+title: "Lab 4: Iporting NOAA Buoy Data from Monterey Bay"
 author: "Aida Aquino Arias"
 output:
+  html-document:
   embed-resources: true
   code-tools: true
   echo: true
----  
+--- 
 # Part 1: Setup
 
 ## GitHub Workflow
@@ -79,7 +80,7 @@ When you read in the data give it an appropriate name for what the data represen
 #| label: load-data
 #download.file("https://jcanner.github.io/stat_210_2025_website/docs/labs/student/data/buoy_2024.txt", destfile = "buoy_2023.txt")
 
-read_table("data-raw/buoy_2023.txt")
+buoy_data <- read_table("data-raw/buoy_2023.txt")
 ## Downloaded the data file by looking at the 'Help' panel then commented it out and loaded the data into the data-raw file
 ```
 
@@ -90,7 +91,7 @@ In your data, you will notice the `#` in front of `yr` in the second row. That i
 
 ```{r}
 #| label: load-data-comment
-read_table("data-raw/buoy_2023.txt", comment = "#")
+buoy_data <- read_table("data-raw/buoy_2023.txt", comment = "#")
 ## Referred to the Rstudio book to 'drop all lines that start with #'. Updated the table
 ```
 
@@ -101,7 +102,7 @@ We want to use snake_case for our variable names. Use the `janitor` package to c
 ```{r}
 #| label: clean-names
 library(janitor)
-read_table("data-raw/buoy_2023.txt", comment = "#")
+buoy_data <- read_table("data-raw/buoy_2023.txt", comment = "#")
 clean_names(data)%>%
   rename(mm = mm, 
          mm_2 = mm_2)
@@ -134,7 +135,6 @@ Remember that now we are reading back in a data file of type `csv`. Now when you
 ```{r}
 #| label: load-data-again
 #| eval: FALSE
-read_table("data-raw/buoy_2023.txt", comment = "#")
 cleaned_data <- read_csv("data-raw/buoy_update.csv", 
          col_types = cols(.default = col_character()), 
          na = c("99", "999"))
@@ -167,20 +167,22 @@ Now that are data is "analytic ready", go ahead and read in your clean data and 
 
 ```{r}
 #| label: monterey-air-temp-viz
+#library(viridis)
 cleaned_data <- read_csv("data-clean/buoy_update.csv")
 
 ggplot(cleaned_data, aes(x = MM, 
                          y = ATMP, 
                          color = factor(MM))) +
-  geom_point(position = "jitter", show.legend = FALSE, alpha = 0.4) +
+  geom_point(position = "jitter", show.legend = FALSE, alpha = 0.3) +
   geom_smooth(se = FALSE, color = "black", show.legend = FALSE) +
   labs(title = "Monterey Canyon Air Temperature in 2024", 
        x = "Months in 2024", 
        y = "Air Temperature (Celsius)", 
        color = "MM") +
   scale_color_viridis(discrete = TRUE) +
+  scale_x_continuous(breaks = (1:12)) +
   theme_minimal()
-
+##used the book, rstudio book, rstudio archive website, and rcharts for references ("https://r-charts.com/base-r/axes/#axis-limits") (https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)
 ```
 
 # Part 4: Find a Data Set
@@ -196,8 +198,12 @@ One fun source for data is [Tidy Tuesday](https://github.com/rfordatascience/tid
 
 **For your found data write a brief description of the data and and provide its source.**
 
->Insert your description and link to your source here. Identify 2-3 research questions you could try to answer with this data.  
-
+#The Simpsons data set is a collection of character dialog, supporting character reacurrance, as well as talk about declining TV ratings. The data is an analysis of, what I belive, to be the overall result of episode quality and script as the seasons pregressed.
+https://toddwschneider.com/posts/the-simpsons-by-the-data/
+Questions:
+How has the dialog among the main cast of chracters changed over the years?
+How does The Simpsons dialong compare to other mature carttons at the time?
+How do curent events affect the dialong and the chracter reacurece in each season or episodes.
 
 
 
