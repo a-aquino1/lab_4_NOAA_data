@@ -1,3 +1,11 @@
+---
+title: "Lab 4"
+author: "Aida Aquino Arias"
+output:
+  embed-resources: true
+  code-tools: true
+  echo: true
+---  
 # Part 1: Setup
 
 ## GitHub Workflow
@@ -107,8 +115,9 @@ Write the data to a `csv` file called `buoy_update.csv`. Be sure to write it to 
 
 ```{r}
 #| label: write-data-part-1
-read_table("data-raw/buoy_2023.txt", comment = "#")
 write_csv(data, "data-raw/buoy_update.csv")
+              
+   
 ## wrote the .txt data file into a .csv 
 ```
 
@@ -124,12 +133,14 @@ Remember that now we are reading back in a data file of type `csv`. Now when you
 
 ```{r}
 #| label: load-data-again
+#| eval: FALSE
 read_table("data-raw/buoy_2023.txt", comment = "#")
 cleaned_data <- read_csv("data-raw/buoy_update.csv", 
          col_types = cols(.default = col_character()), 
-         na = c("99","999"))
+         na = c("99", "999"))
 
-#write_csv(data, "clean-data/buy_update.csv")
+
+## cleaned the data and changed the data into character, looked in the book
 
 ```
 
@@ -139,8 +150,11 @@ Here is the code you can use to fix the data without exporting and importing aga
 
 ```{r}
 #| label: parse-double
-buoy_final <- your_file_name |> 
+buoy_final <- cleaned_data |> 
   mutate(across(.cols = everything(), ~parse_double(.x)))
+
+write_csv(buoy_final, 
+          "data-clean/buoy_update.csv")
 ```
 
 
@@ -153,7 +167,19 @@ Now that are data is "analytic ready", go ahead and read in your clean data and 
 
 ```{r}
 #| label: monterey-air-temp-viz
+cleaned_data <- read_csv("data-clean/buoy_update.csv")
 
+ggplot(cleaned_data, aes(x = MM, 
+                         y = ATMP, 
+                         color = factor(MM))) +
+  geom_point(position = "jitter", show.legend = FALSE, alpha = 0.4) +
+  geom_smooth(se = FALSE, color = "black", show.legend = FALSE) +
+  labs(title = "Monterey Canyon Air Temperature in 2024", 
+       x = "Months in 2024", 
+       y = "Air Temperature (Celsius)", 
+       color = "MM") +
+  scale_color_viridis(discrete = TRUE) +
+  theme_minimal()
 
 ```
 
