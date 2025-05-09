@@ -116,7 +116,7 @@ Write the data to a `csv` file called `buoy_update.csv`. Be sure to write it to 
 
 ```{r}
 #| label: write-data-part-1
-write_csv(data, "data-raw/buoy_update.csv")
+write_csv(buoy_data, "data-raw/buoy_update.csv")
               
    
 ## wrote the .txt data file into a .csv 
@@ -139,8 +139,6 @@ cleaned_data <- read_csv("data-raw/buoy_update.csv",
          col_types = cols(.default = col_character()), 
          na = c("99", "999"))
 
-print(cleaned_data)
-
 
 ## cleaned the data and changed the data into character, looked in the book
 
@@ -152,12 +150,12 @@ Here is the code you can use to fix the data without exporting and importing aga
 
 ```{r}
 #| label: parse-double
+#| eval: FALSE
 buoy_final <- cleaned_data |> 
   mutate(across(.cols = everything(), ~parse_double(.x)))
 
 write_csv(buoy_final, 
           "data-clean/buoy_update.csv")
-print(buoy_final)
 ```
 
 
@@ -170,12 +168,13 @@ Now that are data is "analytic ready", go ahead and read in your clean data and 
 
 ```{r}
 #| label: monterey-air-temp-viz
-#library(viridis)
+library(viridis)
 cleaned_data <- read_csv("data-clean/buoy_update.csv")
 
-ggplot(cleaned_data, aes(x = MM, 
-                         y = ATMP, 
-                         color = factor(MM))) +
+ggplot(data = cleaned_data, 
+       aes(x = MM, 
+           y = ATMP, 
+           color = factor(MM))) +
   geom_point(position = "jitter", show.legend = FALSE, alpha = 0.3) +
   geom_smooth(se = FALSE, color = "black", show.legend = FALSE) +
   labs(title = "Monterey Canyon Air Temperature in 2024", 
