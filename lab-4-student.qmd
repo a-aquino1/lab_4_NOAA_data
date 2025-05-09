@@ -103,7 +103,7 @@ We want to use snake_case for our variable names. Use the `janitor` package to c
 #| label: clean-names
 library(janitor)
 buoy_data <- read_table("data-raw/buoy_2023.txt", comment = "#")
-clean_names(data)%>%
+clean_names(buoy_data)%>%
   rename(mm = mm, 
          mm_2 = mm_2)
 ## loaded the janitor package and clean_name in order to rename mm into separate distinctions
@@ -139,6 +139,8 @@ cleaned_data <- read_csv("data-raw/buoy_update.csv",
          col_types = cols(.default = col_character()), 
          na = c("99", "999"))
 
+print(cleaned_data)
+
 
 ## cleaned the data and changed the data into character, looked in the book
 
@@ -155,6 +157,7 @@ buoy_final <- cleaned_data |>
 
 write_csv(buoy_final, 
           "data-clean/buoy_update.csv")
+print(buoy_final)
 ```
 
 
